@@ -1,0 +1,34 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+ name: datagrid
+ namespace: namespace-placeholder
+spec:
+ targetNamespaces:
+ - namespace-placeholder
+
+---
+
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+ name: datagrid-operator
+ namespace: namespace-placeholder
+spec:
+ channel: 8.1.x
+ installPlanApproval: Automatic 
+ name: datagrid
+ source: redhat-operators
+ sourceNamespace: openshift-marketplace
+
+# ---
+
+#apiVersion: infinispan.org/v1
+#kind: Infinispan
+#metadata:
+#  name: example-infinispan
+#  namespace: namespace-placeholder
+#spec:
+#  replicas: 3
+#  expose:
+#    type: LoadBalancer

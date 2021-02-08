@@ -1,0 +1,9 @@
+apiVersion: infinispan.org/v1
+kind: Infinispan
+metadata:
+  name: example-infinispan
+  namespace: namespace-placeholder
+spec:
+  replicas: 3
+  expose:
+    type: LoadBalancer

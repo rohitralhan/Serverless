@@ -1,0 +1,14 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: quarkus-serverless-client
+  namespace: namespace-placeholder
+spec:
+  template:
+    spec:
+      containers:
+        # Replace {username} with your repository username
+        - image: quay.io/rralhan/quarkus-serverless-client1:latest
+          env:
+          - name: REMOTE_SVC
+            value: "http://-remote-host"

@@ -1,0 +1,33 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: quarkus-serverless-server
+  namespace: namespace-placeholder
+spec:
+  template:
+    spec:
+      containers:
+        # Replace {username} with your repository username
+        - image: quay.io/rralhan/quarkus-serverless1:latest
+          env:
+          - name: DG_HOST
+            value: "-datagrid-host"
+          - name: DG_PORT
+            value: "11222"
+          - name: DG_USER
+            value: "developer"
+          - name: DG_PWD
+            value: "-user-password"
+          - name: DG_CERT
+            value: "/mnt/clientcerts"
+          # This section specified where in the container we want the
+          # volume containing our secret to be mounted.
+          volumeMounts:
+            - name: my-volume
+              mountPath: /mnt
+      # This section attaches the secret "google-robot-secret" to
+      # the Pod holding the user container.
+      volumes:
+        - name: my-volume
+          secret:
+            secretName: clientcerts
