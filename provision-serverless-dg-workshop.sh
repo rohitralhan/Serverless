@@ -6,6 +6,9 @@ SERVERLESS_PROJECT_DISPLAY_NAME="ServerlessApps"
 DATAGRID_PROJECT_NAME="datagrid-ws-1"
 DATAGRID_PROJECT_DISPLAY_NAME="DataGridCluster"
 
+# Set to the appropriate block storage you want to use for DataGrid/Infinispan Cluster
+STORAGE_CLASS_NAME=gp2
+
 # Create the namespaces for the serverless apps and DataGrid
 echo "Creating projects: $SERVERLESS_PROJECT_NAME and $DATAGRID_PROJECT_NAME"
 oc new-project $SERVERLESS_PROJECT_NAME --display-name=$SERVERLESS_PROJECT_DISPLAY_NAME --description=$SERVERLESS_PROJECT_DISPLAY_NAME
@@ -34,11 +37,16 @@ rm -rf server.jks server.crt
 
 # Install the serverless server app
 echo "Installing $SERVERLESS_PROJECT_NAME Applications."
+
 # oc project $DATAGRID_PROJECT_NAME
-LB=`oc describe service example-infinispan-external -n $DATAGRID_PROJECT_NAME | grep 'LoadBalancer Ingress' | awk -F ':' '{ gsub(/^[ \t]+/, "", $2); print $2 }'`
+LB="example-infinispan.$DATAGRID_PROJECT_NAME.svc.cluster.local"
+UP=`oc get secret/example-infinispan-generated-secret -n $DATAGRID_PROJECT_NAME -o template='{{index .data "identities.yaml"}}' | openssl base64 -d -A | grep -A 1 "username: developer" | grep "password" | awk -F ": " '{ print $2 }'`
+cat knative-quarkus-serverless.yaml | sed -e "s/namespace-placeholder/$SERVERLESS_PROJECT_NAME/g" | sed -e "s/-datagrid-host/$LB/g" | sed -e "s/-user-password/$UP/g" | oc apply -n $SERVERLESS_PROJECT_NAME -f -
+
+#LB=`oc describe service example-infinispan-external -n $DATAGRID_PROJECT_NAME | grep 'LoadBalancer Ingress' | awk -F ':' '{ gsub(/^[ \t]+/, "", $2); print $2 }'`
 # LB=`oc describe service example-infinispan-external -n datagrid-ws-1 | grep 'LoadBalancer Ingress' | awk -F ':' '{ gsub(/^[ \t]+/, "", $2); print $2 }'`
 #echo $LB
-UP=`oc get secret/example-infinispan-generated-secret -n $DATAGRID_PROJECT_NAME -o template='{{index .data "identities.yaml"}}' | openssl base64 -d -A | grep -A 1 "username: developer" | grep "password" | awk -F ": " '{ print $2 }'`
+# UP=`oc get secret/example-infinispan-generated-secret -n $DATAGRID_PROJECT_NAME -o template='{{index .data "identities.yaml"}}' | openssl base64 -d -A | grep -A 1 "username: developer" | grep "password" | awk -F ": " '{ print $2 }'`
 # UP=`oc get secret/example-infinispan-generated-secret -n datagrid-ws-1 -o template='{{index .data "identities.yaml"}}' | openssl base64 -d -A | grep -A 1 "username: developer" | grep "password" | awk -F ": " '{ print $2 }'`
 #echo $UP
 # oc project $SERVERLESS_PROJECT_NAME
