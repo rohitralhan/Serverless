@@ -164,13 +164,13 @@
 <p>The namespace names are controlled by the following variables in the <strong>provision-serverless-dg-workshop.sh</strong>:</p>
 <div class="literalblock">
 <div class="content">
-<pre>SERVERLESS_PROJECT_NAME="serverless-apps-1" +
+<pre>SERVERLESS_PROJECT_NAME="serverless-apps-1"
 SERVERLESS_PROJECT_DISPLAY_NAME="ServerlessApps"</pre>
 </div>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>DATAGRID_PROJECT_NAME="datagrid-ws-1" +
+<pre>DATAGRID_PROJECT_NAME="datagrid-ws-1"
 DATAGRID_PROJECT_DISPLAY_NAME="DataGridCluster"</pre>
 </div>
 </div>
